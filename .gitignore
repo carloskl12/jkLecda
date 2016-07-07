@@ -1,0 +1,4 @@
+#Ficheros objeto
+*.o
+#Ficheros temporales
+*~

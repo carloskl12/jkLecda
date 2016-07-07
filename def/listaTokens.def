@@ -1,0 +1,47 @@
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%% Explorador o escaner utilizado sobre codigo fuente con %%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%% formato ISO-8859-15 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (Latin 9)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%% Versión  1.0 (LECDA REDUCIDO) %%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%% Carlos Antonio Jacanamejoy Jamioy %%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/*
+  En este archivo se hallan los nombres de los identificadores para las 
+  palabras reservadas del lenguaje LECDA version 1.0.
+  Las palabras reservadas empiezan por una letra en mayúscula.
+*/
+
+/*
+	Se debe usar una macro:
+	JK_ACCION(am_nombre, am_cadena)
+	para generar la enumeración y el vector de cadenas.
+*/
+
+#ifndef SEPARADOR_COMA
+	#define SEPARADOR_COMA ,
+#endif
+
+//Se utiliza esta macro para el momento de buscar las palabras reservadas
+//sobre el vector de punteros a las cadenas de las palabras reservadas.
+//Si se agregan palabras reservadas hacerlo al final y cambiar el valor
+//de esta macro.
+#ifndef ULTIMA_PALABRA_RESERVADA
+  #define ULTIMA_PALABRA_RESERVADA PR_CONCATENA
+#endif
+
+JK_ACCION( PR_CODI,	    "Codi")	SEPARADOR_COMA
+JK_ACCION( PR_CODIAC,   "Codiac")	SEPARADOR_COMA
+JK_ACCION( PR_RUTINA,   "Rutina")	SEPARADOR_COMA
+JK_ACCION( PR_ESCRIBE,  "Escribe")	SEPARADOR_COMA
+JK_ACCION( PR_GENERA,   "Genera")	SEPARADOR_COMA
+JK_ACCION( PR_MADE,     "Made")	SEPARADOR_COMA
+JK_ACCION( PR_MADS,     "Mads")	SEPARADOR_COMA
+JK_ACCION( PR_MAG,      "Mag")	SEPARADOR_COMA
+JK_ACCION( PR_SWITCH,   "Switch")	SEPARADOR_COMA
+JK_ACCION( PR_IF,       "If") SEPARADOR_COMA
+JK_ACCION( PR_CONCATENA,"Concatena")	
+
+
+#undef JK_ACCION
+#undef SEPARADOR_COMA

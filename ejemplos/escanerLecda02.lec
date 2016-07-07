@@ -1,0 +1,366 @@
+//************** Escaner lecda **********************
+
+Rutina encabezado;//comentario
+
+encabezado = 
+$%%%%%%%%%%%%%%%%% inicio del encabezado
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%% Explorador o escaner utilizado sobre codigo fuente con %%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%% formato ISO-8859-15 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (Latin 9)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%% Versión  1.1 (LECDA REDUCIDO) %%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%% Carlos Antonio Jacanamejoy Jamioy %%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$%%%%%%%%%%%%%%%%%% Fin del encabezado
+
+Rutina include;
+include=
+$%%%%%%%%%%%%%%%%%%%% aquello que va en el archivo *.h
+#ifndef __ENCABEZADO_ESCANER__
+#define __ENCABEZADO_ESCANER__
+
+//------Definiciones globales
+#define MAX_L_TOKEN  30 //Maxima longitud del token (sin incluir el terminal 0)
+JKES yylex();
+#endif
+$%%%%%%%%%%%%%%%%%% Fin del encabezado
+
+Rutina includesCF; //Archivos include en archivo fuente
+includesCF=
+$%%%%%%%%%%%%%%%%%%%%%%
+#include <stdio.h> 
+#include <string.h> 
+#include "jkTiposEstandar.h"
+#include "erroresEscaner.h"
+#include "alfabeto.h"
+#include "listaTokens.h"
+#include "escanerLECDA.h"
+#include "variables.h"
+$%%%%%%%%%%%%%%%%%%%%%%
+
+Rutina definiciones;
+definiciones=
+$%%%%%%%%%%%%%%%%%%%%%%
+// La máxima cantidad de dígitos de un número es 10 porque se usan solo 32 bits
+// para representarlos, y el máximo numero entero con signo que se puede
+// representar es 4294967295
+#define MAX_L_NUMERO 10 //Maxima cantidad de dígitos de un número entero
+#define BLOQUE_RUTINA 500 // Bloques de memoria para una rutina
+// Macro para definir la accion a seguir luego de hallar una nueva linea
+#define ACCION_NUEVA_LINEA lineaLectura++
+$%%%%%%%%%%%%%%%%%%%%%%
+
+Rutina variables;
+variables =
+$%%%%%%%%%%%%%%%%%%%%%
+// Declaración de variables
+extern JKES lineaLectura; // variable para contar las lineas
+extern JKE jkError; //Número del error.
+extern JK_ID *tabla_Ids; //Tabla de simbolos (identificadores asignados)
+extern FILE *yyin; //El flujo sobre el cual se han de leer los tokens
+// Se define la variable en la cual el analizador léxico busca los valores
+// corresponde a las interpretaciones posibles de una variable
+VALOR_ID yylval;
+JK_ID *yyjkvar; //La ultima variable que se ha asociado con un token leido
+$%%%%%%%%%%%%%%%%%%%%
+Rutina varDeFun;
+varDeFun=
+$%%%%%%%%%%%%%%%%%%%%%
+JKES c;
+JKES i;
+JKB tpC; //tipo de caracter
+yylval.entero=0;
+$%%%%%%%%%%%%%%%%%%%%%
+
+Rutina ignoraEspacios;
+ignoraEspacios=
+$%%%%%%%%%%%%%%%%%%%%%
+while ((c = getc (yyin)) == ' ' || c == '\t')
+;
+$%%%%%%%%%%%%%%%%%%%%%
+
+Rutina finFichero;
+finFichero=
+$%%%%%%%%%%%%%%%%%%%%%
+if (c == EOF)
+{
+  RETORNA_TK( FIN_DE_FICHERO );
+}
+$%%%%%%%%%%%%%%%%%%%%%
+
+Rutina tipoCaracter;
+tipoCaracter=
+$%%%%%%%%%%%%%%%%%%%%%
+tpC= jk_tipoCaracter(c);
+$%%%%%%%%%%%%%%%%%%%%%
+
+//***************************************************************************
+//Las rutinas para el tipo de token
+Rutina tpNúmero;
+tpNúmero =
+$%%%%%%%%%%%%%%%%%%%%%
+i=0;
+do{
+  yylval.entero= 10*yylval.entero + c - 48;
+  i++;
+}
+while( (c=getc (yyin)) != EOF &&
+ jk_tipoCaracter(c)== CHAR_NUMERO  && i < MAX_L_NUMERO);
+if(i >= MAX_L_NUMERO )
+{
+  REPORTA_ERROR( IDE_ENTERO_INVALIDO ) ;
+  RETORNA_TK( TOKEN_INVALIDO );
+}
+RETORNA_TK( NUMERO_ENTERO );
+$%%%%%%%%%%%%%%%%%%%%%
+
+Rutina tpOperadorUnico;
+tpOperadorUnico=
+$%%%%%%%%%%%%%%%%%%%%%
+return ( c );
+$%%%%%%%%%%%%%%%%%%%%%
+
+Rutina tpLetra;
+tpLetra=
+$%%%%%%%%%%%%%%%%%%%%%
+i=0;
+//Reserva memoria para la cadena del token, la cadenta termina con un cero
+//por ello se le asigna un caracter extra.
+yylval.cadena= malloc( (MAX_L_TOKEN +1) * sizeof(JKB) );
+JKB *cadena = yylval.cadena; // usado para hacer mas facil asignar valores
+
+do{
+  *cadena = (JKB) c ;
+  cadena++;
+  i++;
+  c=getc (yyin);
+  tpC = jk_tipoCaracter(c);
+}
+while( c != EOF && 
+ (tpC == CHAR_NUMERO  || tpC == CHAR_LETRA ) &&
+  i < MAX_L_TOKEN );
+  *cadena= (JKB) 0; //Agrega el terminador de cadena.
+if(i >= MAX_L_TOKEN )
+{
+  REPORTA_ERROR( IDE_IDENTIFICADOR_INVALIDO ) ;
+  RETORNA_TK( TOKEN_INVALIDO );
+}
+//************** Verifica si es una palabra reservada **********************
+for(i=0;i <= ULTIMA_PALABRA_RESERVADA ; i++) 
+    if(! strcmp( yylval.cadena , jkc_palabrasReservadas[i]) ) 
+    {
+      RETORNA_TK_PR( i );
+    }
+//*************** verifica si es una variable declarada ********************
+yyjkvar = buscaId( yylval.cadena);
+if(yyjkvar != 0)
+{
+  //¡Importante! el valor para el analizador lexico es la estructura
+  // de la variable, no el valor de la variable en si
+  // por ello puede exitir ambiguedad sobre los tipos de valores manejados
+  // en el analizador lexico, respecto a la estructura de VALOR_ID y su
+  // uso natural.
+  JKB tipoEnmascarado = (yyjkvar->tipo) & 0x7F;
+  yylval.codi = yyjkvar; 
+  RETORNA_TK_VD( tipoEnmascarado );
+}
+// No es una palabra reservada, ni una variable declarada
+// si llega a este punto, por ello es un
+// identificador válido
+RETORNA_TK( IDENTIFICADOR );
+$%%%%%%%%%%%%%%%%%%%%%
+
+Rutina comentario;
+comentario=
+$%%%%%%%%%%%%%%%%%%%%%
+if( c == '/')
+{
+  c=getc (yyin);
+  if( c == '/') 
+  {
+    //Se pasa el resto de la linea completa
+    while( (c=getc (yyin)) != EOF && c != '\n')
+    ;
+    if( c== '\n')
+    {
+      ACCION_NUEVA_LINEA;
+    }
+    return ( (JKES) '\n' ); //Retorno limpio
+  } else
+  {
+    // El caracter / no tiene ningun uso por si solo, por ello el error
+    REPORTA_ERROR( IDE_COMENTARIO_INVALIDO ) ;
+    RETORNA_TK( TOKEN_INVALIDO );
+  }
+}
+$%%%%%%%%%%%%%%%%%%%%% 
+
+Rutina codigoRutina;
+codigoRutina=
+$%%%%%%%%%%%%%%%%%%%%% 
+if( c== '\n')
+{
+  ACCION_NUEVA_LINEA;
+  c=getc (yyin);
+  if(c == '$')
+  //Se hallo especificador de  codigo fuente
+  {
+    //Se pasa el resto de la linea completa
+    while( (c=getc (yyin)) != EOF && c != '\n')
+    ;
+    if( c== '\n')
+    {
+      //ACCION_NUEVA_LINEA;//Se lee nueva linea por el do en el otro
+    } else 
+    {
+      REPORTA_ERROR( IDE_RUTINA_SIN_ESPECIFICAR ) ;
+      RETORNA_TK( TOKEN_INVALIDO );
+    }
+    //Los codigos que siguen corresponden al codigo fuente
+    //Se toman tal cual hasta hallar el terminador de codigo
+    JKES memReserva = BLOQUE_RUTINA +1; // memoria reservada
+    yylval.cadena= malloc( memReserva * sizeof(JKB) );
+    JKB *cadena = yylval.cadena; // usado para hacer mas facil asignar valores
+    JKES cAnt; //Caracter anterior
+    i=0;//Longitud de la cadena
+    do
+    {
+      //verifica que exista suficiente memoria reservada
+      //En caso contrario reserva mas memoria
+      if( memReserva-1 <= i)
+      {
+        memReserva += BLOQUE_RUTINA;
+        cadena = realloc(yylval.cadena,memReserva);
+        if(cadena == NULL)
+        {
+          REPORTA_ERROR( IDE_MEMORIA_INSUFICIENTE ) ;
+          RETORNA_TK( TOKEN_INVALIDO );
+        } else
+        {
+          yylval.cadena = cadena;
+          cadena+=i-1; //Actualiza el puntero a donde debe sesguir escribiendo.
+        }
+      }
+      if( c== '\n')
+      {
+        ACCION_NUEVA_LINEA;
+      } 
+      if(i>0)//Evita introducir el caracter de nueva linea
+      {
+        *cadena = (JKB) c ;
+        cadena++;
+      }
+      i++;        
+      cAnt=c;
+      c=getc (yyin);
+      tpC = jk_tipoCaracter(c);
+    }      
+    while( c != EOF && 
+     (cAnt != '\n'  || c != '$')  );
+    *cadena = (JKB) 0 ;//Termina la cadena
+    if(c == EOF)
+    {
+      REPORTA_ERROR( IDE_RUTINA_SIN_TERMINAR ) ;
+      RETORNA_TK( TOKEN_INVALIDO );
+    }
+    
+    //Se ignora el resto de linea
+    while( (c=getc (yyin)) != EOF && c != '\n')
+    ;
+
+    //Una rutina puede terminar en el ultimo renglón del archivo, el cual debe
+    //corresponder al terminal de rutina $.
+    
+    RETORNA_TK( CODIGO_RUTINA );
+    
+  }
+  //Si es una nueva linea normal, retorna la nueva linea
+  //Retorno limpio, no requiere reanalizar el caracter de finalizacion de token
+  RETORNA_TK( (JKES) '\n' ); 
+}
+$%%%%%%%%%%%%%%%%%%%%% 
+
+
+
+Rutina tokenInvalido;
+tokenInvalido=
+$%%%%%%%%%%%%%%%%%%%%%
+REPORTA_ERROR( IDE_CARACTER_INVALIDO ) ;
+yylval.entero = c;
+return TOKEN_INVALIDO ;
+$%%%%%%%%%%%%%%%%%%%%%
+
+Rutina defFun;
+defFun=
+$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+JKES yylex(){
+$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Rutina finFun;
+finFun=
+$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+}
+$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//Variable donde se halla el tipo de caracter
+Codi tpC(6);
+Codiac  acciones(3);
+
+Made grupoCaracter(1);
+Mads accionToken(1);
+
+acciones(0)= tpNúmero;
+acciones(1)= tpOperadorUnico;
+acciones(2)= tpLetra;
+
+grupoCaracter(0)= tpC;
+accionToken(0)=acciones;
+Mag escaner(3)(grupoCaracter:accionToken);
+
+escaner = { 4:0
+            2:0
+            5:0
+            };
+
+Rutina escanerParcial;
+escanerParcial = Genera(escaner:Switch);
+
+varDeFun = varDeFun @ 1;//Tabuladores
+ignoraEspacios = ignoraEspacios @ 1;
+finFichero = finFichero @ 1;
+tipoCaracter = tipoCaracter @ 1;
+comentario = comentario @ 1;
+codigoRutina = codigoRutina @ 1;
+tokenInvalido = tokenInvalido @ 1;
+escanerParcial = escanerParcial @ 1;
+
+
+Codiac pepito(15);
+Codiac includes(2);
+
+includes(0)= encabezado;
+includes(1)= include;
+pepito(0)= encabezado;
+
+
+pepito(1)= includesCF;
+pepito(2)= definiciones;
+pepito(3)= variables;
+pepito(4)= definiciones;
+pepito(5)= defFun;
+pepito(6)= varDeFun;
+pepito(7)= ignoraEspacios;
+pepito(8)=finFichero;
+pepito(9)=tipoCaracter;
+pepito(10)=escanerParcial;
+pepito(11)=comentario;
+pepito(12)=codigoRutina;
+pepito(13)=tokenInvalido;
+pepito(14)=finFun;
+
+
+Rutina escanerLecda;
+escanerLecda = Concatena(pepito);
+Escribe(escanerLecda);
+
+escanerLecda= Concatena(includes);
+Escribe(escanerLecda, h);

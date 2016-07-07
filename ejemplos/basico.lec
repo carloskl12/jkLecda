@@ -1,0 +1,99 @@
+//Declaraciones puras.
+
+//*Declaración de codi.
+    Codi entrada(5);
+    Codi entrada2(3);
+    Codi entrada3(7);
+//*Declaración de codiac.
+    Codiac acciones(5);
+//*Declaración de rutina.
+    Rutina miRutina;
+    Rutina miRutina2;
+    Rutina miRutina3;
+    Rutina miRutina4;
+    Rutina miRutina5;
+//*Declaración de Made.
+    Made miMade(1);
+    Made miMadeMul(3);
+//*Declaración de Mads.
+    Mads miMads(2);
+
+
+//%%%%%%%%%%%%% Asignaciones puras %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//Asignación a rutina de un codigo literal. 
+    miRutina = 
+$@%%%%%%%%%%%lo que sea
+    perdidos
+    adios
+    En la vida
+    rutinaPrueba();
+$@%%%%%%%%%%%% fin de la rutina
+
+    miRutina2 = 
+$inica declaracion
+    rutina1 de prueba;
+$finaliza declaracion
+
+miRutina3 = 
+$inica declaracion
+    rutina2 xxx;
+    mix de pruebas
+$finaliza declaracion
+
+miRutina4 = 
+$inica declaracion
+    rutina3 ***;
+$finaliza declaracion
+
+miRutina5 = 
+$inica declaracion
+    rutina4 &&&;
+$finaliza declaracion
+
+//Asignacion de una rutina a otra rutina;
+    //miRutina2 = miRutina;
+//Asigna acciones.
+    acciones(0)= miRutina;
+    acciones(1)= miRutina2;
+    acciones(2)= miRutina3;
+    acciones(3)= miRutina4;
+    acciones(4)= miRutina5;
+//*Asigna Made con una variable de entrada;
+    miMade(0) = entrada;
+    
+    miMadeMul(0)=entrada;
+    miMadeMul(1)=entrada2;
+    miMadeMul(2)=entrada3;
+//*Asigna Mads con un solo conjunto de acciones;
+    miMads(0) = acciones; 
+    miMads(1) = acciones;
+//*Declaración de mag:
+    Mag switchM(4)(miMade:miMads);
+    
+    Mag mulIn(4)(miMadeMul:miMads);
+//Asignación de mag.
+    switchM= {0: 4, 2  
+				  3: 4, 2 
+				  2: 0, 3 
+				  1: 3, 2 
+				  };
+				  
+	  mulIn={0,2,5:2,1
+	         4,1,6:0,1
+	         2,1,0:2,3
+	         3,0,2:3,1
+	         };
+//Asignación de codigo generado a una rutina
+    //miRutina = Genera(switchM:Switch);	
+    miRutina = Genera(mulIn:Switch);				  
+//*Asigna Made con una variable de entrada;
+    miMade(0) = entrada;
+//Procedimiento .Función escribe.
+    Escribe(miRutina);
+    
+    miRutina2 = Concatena(acciones);
+    Escribe(miRutina2);
+    
+
+

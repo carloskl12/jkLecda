@@ -1,0 +1,38 @@
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%% Versión  1.0 (LECDA REDUCIDO) %%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%% Manejo de errores con %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%% formato ISO-8859-15 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (Latin 9)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%% Carlos Antonio Jacanamejoy Jamioy %%%%%%%%%%%%%%%%%%%%%%%%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/*
+  En este archivo se hallan los nombres de los identificadores para los
+  diferentes errores generador por el escaner del LECDA 1.0, y sus 
+  respectivas cadenas de informe del error.
+*/
+
+/*
+	Definicion de los diferentes errores dados por funciones generales. 
+	JK_ACCION(am_nombre, am_cadena)
+*/
+
+#ifndef SEPARADOR_COMA
+	#define SEPARADOR_COMA ,
+#endif
+
+
+JK_ACCION( IDE_ENTERO_INVALIDO,	"La cantidad de cifras del número supera el valor máximo permitido.")	SEPARADOR_COMA
+JK_ACCION( IDE_IDENTIFICADOR_INVALIDO, "La cantidad de carácteres del identificador supera el valor máximo permitido.")	SEPARADOR_COMA
+JK_ACCION( IDE_COMENTARIO_INVALIDO,	"Los comentarios de linea empiezan por //.")	SEPARADOR_COMA
+JK_ACCION( IDE_RUTINA_SIN_ESPECIFICAR,	"Se ha dejado sin especificar una rutina o codigo fuente.")	SEPARADOR_COMA
+JK_ACCION( IDE_MEMORIA_INSUFICIENTE,	"La reasignación de más memoria para almacenar codigo fuente ha fallado.")	SEPARADOR_COMA
+JK_ACCION( IDE_RUTINA_SIN_TERMINAR,	"Se ha dejado sin especificar la finalización de codigo fuente.")	SEPARADOR_COMA
+JK_ACCION( IDE_CARACTER_INVALIDO,	"Se ha detectado un carácter no válido para el lenguaje.")	SEPARADOR_COMA
+
+JK_ACCION( FIN_ERRORES,		"")	
+
+
+#undef JK_ACCION
+#undef SEPARADOR_COMA
+
