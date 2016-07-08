@@ -1,36 +1,152 @@
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%% Analizador léxico %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//%%%%%%%%%%%%%%%%%%%%%%%%%%% formato ISO-8859-15 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% (Latin 9)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//%%%%%%%%%%%%%%%%%%%%% Versión  1.0 (LECDA REDUCIDO) %%%%%%%%%%%%%%%%%%%%%%%%%%
-//%%%%%%%%%%%%%%%%%%% Carlos Antonio Jacanamejoy Jamioy %%%%%%%%%%%%%%%%%%%%%%%%
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Compilador _lecda_
+==================
+Versión  1.0 (LECDA REDUCIDO)
+  -[¿Qué es lecda?](#qué-es-lecda)
+  -[Crear el proyecto](#crear-el-proyecto)
+  -[Características del compilador](#características-del-compilador)
+  -[Organización del proyecto](#organización-del-proyecto)
+  -[Ejemplos](#ejemplos)
+ 
+##¿Qué es lecda?##
+La motivación de realizar _lecda_ fué construir una herramienta para desarrollar de forma más rápida proyectos en lenguaje c, claro está que estos proyectos tienen ciertas características, estas deben permitir abordar la situación de forma tal que se tienen variables de entrada que fijan las acciones a realizar.
 
-gclec es un sencillo compilador para el lenguaje LECDA (Lógica En conjuntos
-dispersos asociados).
+Debido a que la logica booleana se convierte en tediosa cuando se trata de aplicar sobre conjuntos de entrada no binaria, si no que estos conjuntos pueden tener un numero de elementos diferentes para cada conjunto surge la necesidad de utilizar otra metodología para abordar este tipo de problemas.
 
+__lecda__ es el acrónimo a lógica en conjuntos dispersos asociados, la idea consiste en algo similar a una tabla de verdad, que tiene unas proposiciones con sus valores de verdad, que en _lecda_ son los conjuntos dispersos \(codi\) que pueden tener mas de dos valores, y ademas pueden variar la cantidad de valores posibles en una misma _tabla_ para diferentes _codis_. 
+
+Un conjunto _disperso (CODI)_ corresponde a un grupo de elementos representados por numeros naturales consecutivos iniciados en cero, asi que en forma abstracta el  conjunto disperso es un subconjunto de los numeros naturales. La operacion valor absoluto \(_operador elementos_\) denota la cantidad de elementos que contiene el conjunto.
+
+A== \{ 0, 1, 2, 3, 4, 5 \}, => |A| == 6;
+B== \{ 0, 1, 2, 3 \}
+
+En adelante el operador == indica equivalencia,  y el = indica asignación.
+
+###Variables de entrada###
+El conjunto de variables de entrada puede tener una o mas variables, cada una esta representada por un CODI, para agrupar las entradas se recurre a una matriz de  valores, denominada matriz de asociación dispersa de entrada (MADE). Cada columna de la MADE representa cada CODI que la conforma, y cada fila \(secuencia\) representa un caso en concreto de valores.
+
+###Acciones (salidas)###
+Para definir salidas se definen otros CODIs que tienen asociado código, por ello se denominan CODIAC (Conjunto disperso con asociación de código). El conjunto de acciones de salida puede tener uno o mas grupos de acciones, cada grupo de acciones está representado por un CODIAC, para presentar las diferentes formas en que se presentan las acciones (salidas) se utiliza una matriz de valores, denominada matriz de asociacion dispersa de salida (MADS).
+
+###Matriz de asociación global###
+La asociación entre MADE y MADS se denomina matriz de asociacion global(MAG). Las secuencias de la MAG corresponden al numero de filas de la matriz de la asociacion general, y esto finalmente representa la solución a lo que se busca llegar.
+
+Entoncesl o que se hace con lecda es crear las diferentes matrices, las acciones, y luego se compila para generar el código que reflejara lo estipulado en las matrices.
+
+###Observaciones###
+La forma presentada para modelar situaciones es una propuesta en desarrollo, actualmente se requieren desarrollos teóricos en este campo, que se espera a futuro concretarlos y desarrollarlos. 
+
+##Crear el proyecto##
+El proyecto está desarrollado sobre un sistema operativo Linux \(Ubuntu 14.04 \), para compilarlo se utilizó:
+
+* bison (GNU bison) 3.0.2
+* GNU Make 3.81
+* gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4
+
+Teniendo lo necesario, para compilar el proyecto solo se requiere hacer un make en el directorio del mismo:
+		make
+
+##Características del compilador##
+
+gclec es un sencillo compilador para el lenguaje LECDA, es importante recordar que lecda aún está en desarrollo y por lo mismo su compilador trabaja con aspectos básicos, a continuación se documenta el lenguaje con el que trabaja el compilador.
+
+###Palabras reservadas###
+Todas las palabras reservadas empiezan con letra mayúscula:
+  * Codi: declara un codi, asociado a variables numéricas.
+  * Codiac: declara un codiac, asociado a acciones o fragmentos de código.
+  * Rutina: declara un contenedor de codigo.
+  * Escribe: escribe codigo sobre el archivo de salida, ya sea generado o escrito directamente como literal de codigo.
+  * Genera: genera el codigo a partir de una MAG.
+  * Concatena: concatena las rutinas que estan asociadas a un codiac.
+  * Made: declara una matriz de asociación dispersa de entrada.
+  * Mads: declara una matriz de asociación dispersa de salida.
+  * Mag: declara una matriz de asociación general.
+  * Switch: forma de generar codigo
+  * If: forma de generar codigo
+
+###Operadores###
+Se utilizan las comillas para definir la secuencia exacta en formato de cadenas le lenguaje c:
+  * "\\n$": inicio para literal de código o rutina .En realidad corresponde a un inicio de linea con el caracter $, el resto de la linea se ignora, y a partir de la siguiente línea se toma como un literal de código hasta encontrar una nueva línea que inicie $.
+  * "\\n$": fin para literal de codigo o rutina. Igual que para el inicio, se toma $ en un inicio de línea para indicar la finalización del código de programación, todo lo que sigue en esta línea se ignora.
+  * "\(\)": referencia a la cantidad de elementos o secuencias de un Ç, made mads, o mag; o igualmente referencia a un elemento o secuencia en particular.
+  * ":": indicador de modo en como se ejecutan ciertas funciones, y ademas sirve como separador en las secuencias de MAG entre elementos de MADE y MADS.
+  * ";": indica el fin de una sentencia.
+  * "\.": indica la concatenacion de CODIs.
+  * "=": asignacion de valor a los diferentes tipos de variables.
+  * "\{\}": especificacion de los elementos de una matriz.
+  * "\,": separador de los elementos de una matriz.
+  * "//": comentarios de linea
+  
+
+###Tipos de variables###
+Los tipos de variables existentes son: Codi, Codiac, Made, Mads, Mag, Rutina.
+
+###Tipos de sentencias###
+####Declaraciones puras####
+Son sentencias que solo indican la creacion de una variable, terminan con punto y coma y salto de linea.
+  * Declaración de codi.
+		Codi entrada(4);
+  * Declaración de codiac.
+		Codiac acciones(5);
+  * Declaración de rutina.
+		Rutina miRutina;
+  * Declaración de Made.
+		Made miMade(2);
+  * Declaración de Mads.
+		Mads miMads(2);
+  * Declaración de mag:
+		Mag switchM(4)(miMade:miMads);
+####Asignaciones puras####
+  * Asignación a rutina de un codigo literal. 
+		miRutina =
+		$@%%%%%%%%%%%lo que sea
+		void rutina (a);
+		$@%%%%%%%%%%%% fin de la rutina
+  * Asignación de codigo generado a una rutina
+		miRutina = Genera(switchM:Switch);
+		miRutina = Concatena(acciones);
+  * Asignación de una rutina a otra;
+		miRutina = miRutina2;
+
+  * Asigna acciones.
+		acciones(0)= miRutina;
+  * Asigna codi a  Made ;
+		miMade(0) = entrada;
+  * Asigna codiac a Mads ;
+		miMads(0) = acciones;
+  * Asignación de mag.
+		switchM= {0: 0, 2
+					1: 1, 2
+					2: 3, 2
+					3: 1, 3 
+					};
+
+####Procedimientos####
+* Función escribe.
+		Escribe(miRutina);
+
+
+
+##Organización del proyecto##
 El directorio principal de trabajo contiene los directorios:
 
-//bin:
-  Se halla el binario del compilador.
+* bin: Se halla el binario del compilador.
 
-//bison:
-  Archivo en lenguaje para bison y el codigo generado del analizador.
+* def \(definiciones\): Archivos que contienen listas de información (\*.def)
 
-def://definiciones:
-  Archivos que contienen listas de información (*.def)
+* ejemplos: Código de ejemplo en lenguaje lecda.
 
-//ejemplos:
-  Codigo de ejemplo en lenguaje lecda.
+* inc \(include\): Las cabeceras que se utilizan en el proyecto.
 
-inc://include:
-  Las cabeceras que se utilizan en el proyecto.
-
-obj:
-  Codigo objeto generado para posteriormente enlazarse
+* obj: Código objeto generado para posteriormente enlazarse
   
-src:
-  Codigo fuente en c, y el archivo para el analizador lexico-semántico 
-  desarrollado en bison (*.y)
+* src \(source\): Código fuente en c, y el archivo para el analizador lexico-semántico desarrollado en bison (\*.y) 
+
+###Acerca del formato de los archivos###
+Los archivos fuente están dados en formato _ISO-8859-15 (Latin 9)_, es un aspecto bastante importante, dado que para el escaner trabaja en base a grupos de carácteres que incluyen acentos, y tambien los mensajes de error se visualicen adecuadamente.
+
+##Ejemplos##
+En el directorio ejemplos existen algunos archivos \*.lec que se pueden compilar. Para realizar una prueba se puede usar directamente en terminal, cuando esta en el directorio de trabajo el comando: 
+		make probar
+Esto creará dos archivos, uno \*.h, y otro \*.c que corresponden a la implementación del escaner de este mismo compilador.
 
 
