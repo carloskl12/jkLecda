@@ -1,11 +1,11 @@
 Compilador _lecda_
 ==================
 Versión  1.0 (LECDA REDUCIDO)
-  -[¿Qué es lecda?](#qué-es-lecda)
-  -[Crear el proyecto](#crear-el-proyecto)
-  -[Características del compilador](#características-del-compilador)
-  -[Organización del proyecto](#organización-del-proyecto)
-  -[Ejemplos](#ejemplos)
+  - [¿Qué es lecda?](#qué-es-lecda)
+  - [Crear el proyecto](#crear-el-proyecto)
+  - [Características del compilador](#características-del-compilador)
+  - [Organización del proyecto](#organización-del-proyecto)
+  - [Ejemplos](#ejemplos)
  
 ##¿Qué es lecda?##
 La motivación de realizar _lecda_ fué construir una herramienta para desarrollar de forma más rápida proyectos en lenguaje c, claro está que estos proyectos tienen ciertas características, estas deben permitir abordar la situación de forma tal que se tienen variables de entrada que fijan las acciones a realizar.
@@ -17,6 +17,7 @@ __lecda__ es el acrónimo a lógica en conjuntos dispersos asociados, la idea co
 Un conjunto _disperso (CODI)_ corresponde a un grupo de elementos representados por numeros naturales consecutivos iniciados en cero, asi que en forma abstracta el  conjunto disperso es un subconjunto de los numeros naturales. La operacion valor absoluto \(_operador elementos_\) denota la cantidad de elementos que contiene el conjunto.
 
 A== \{ 0, 1, 2, 3, 4, 5 \}, => |A| == 6;
+
 B== \{ 0, 1, 2, 3 \}
 
 En adelante el operador == indica equivalencia,  y el = indica asignación.
@@ -43,6 +44,7 @@ El proyecto está desarrollado sobre un sistema operativo Linux \(Ubuntu 14.04 \
 * gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4
 
 Teniendo lo necesario, para compilar el proyecto solo se requiere hacer un make en el directorio del mismo:
+
 		make
 
 ##Características del compilador##
@@ -73,7 +75,7 @@ Se utilizan las comillas para definir la secuencia exacta en formato de cadenas 
   * "\.": indica la concatenacion de CODIs.
   * "=": asignacion de valor a los diferentes tipos de variables.
   * "\{\}": especificacion de los elementos de una matriz.
-  * "\,": separador de los elementos de una matriz.
+  * ",": separador de los elementos de una matriz.
   * "//": comentarios de linea
   
 
@@ -84,36 +86,60 @@ Los tipos de variables existentes son: Codi, Codiac, Made, Mads, Mag, Rutina.
 ####Declaraciones puras####
 Son sentencias que solo indican la creacion de una variable, terminan con punto y coma y salto de linea.
   * Declaración de codi.
+  
 		Codi entrada(4);
+
   * Declaración de codiac.
+
 		Codiac acciones(5);
+
   * Declaración de rutina.
+
 		Rutina miRutina;
+
   * Declaración de Made.
+
 		Made miMade(2);
+
   * Declaración de Mads.
+
 		Mads miMads(2);
+
   * Declaración de mag:
+
 		Mag switchM(4)(miMade:miMads);
+
 ####Asignaciones puras####
   * Asignación a rutina de un codigo literal. 
+
 		miRutina =
 		$@%%%%%%%%%%%lo que sea
 		void rutina (a);
 		$@%%%%%%%%%%%% fin de la rutina
+
   * Asignación de codigo generado a una rutina
+
 		miRutina = Genera(switchM:Switch);
 		miRutina = Concatena(acciones);
+
   * Asignación de una rutina a otra;
+
 		miRutina = miRutina2;
 
   * Asigna acciones.
+
 		acciones(0)= miRutina;
+
   * Asigna codi a  Made ;
+
 		miMade(0) = entrada;
+
   * Asigna codiac a Mads ;
+
 		miMads(0) = acciones;
+
   * Asignación de mag.
+
 		switchM= {0: 0, 2
 					1: 1, 2
 					2: 3, 2
@@ -122,6 +148,7 @@ Son sentencias que solo indican la creacion de una variable, terminan con punto 
 
 ####Procedimientos####
 * Función escribe.
+
 		Escribe(miRutina);
 
 
@@ -146,6 +173,7 @@ Los archivos fuente están dados en formato _ISO-8859-15 (Latin 9)_, es un aspec
 
 ##Ejemplos##
 En el directorio ejemplos existen algunos archivos \*.lec que se pueden compilar. Para realizar una prueba se puede usar directamente en terminal, cuando esta en el directorio de trabajo el comando: 
+
 		make probar
 Esto creará dos archivos, uno \*.h, y otro \*.c que corresponden a la implementación del escaner de este mismo compilador.
 
