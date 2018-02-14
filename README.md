@@ -7,7 +7,7 @@ Versión  1.0 (LECDA REDUCIDO)
   - [Organización del proyecto](#organización-del-proyecto)
   - [Ejemplos](#ejemplos)
  
-##¿Qué es lecda?##
+## ¿Qué es lecda? ##
 __lecda__ es el acrónimo a lógica en conjuntos dispersos asociados, la idea consiste en algo similar a una tabla de verdad, que tiene unas proposiciones con sus valores de verdad, que en _lecda_ son los conjuntos dispersos \(codi\) que pueden tener mas de dos valores, y ademas pueden variar la cantidad de valores posibles en una misma _tabla_ para diferentes _codis_.
 
 Debido a que la lógica booleana se hace compleja cuando se trata de modelar situaciones con variables de entrada que toman más de dos valores posibles, surge la motivación para realizar _lecda_, la motivación fué construir una herramienta para desarrollar de forma rápida proyectos en lenguaje c, claro está que estos proyectos tienen ciertas características, estas deben permitir abordar la situación de forma tal que se tienen variables de entrada que fijan casos en los cuales hay acciones bien definidas que se deben realizar. 
@@ -20,21 +20,21 @@ B== \{ 0, 1, 2, 3 \}
 
 En adelante el operador == indica equivalencia,  y el = indica asignación.
 
-###Variables de entrada###
+### Variables de entrada ###
 El conjunto de variables de entrada puede tener una o mas variables, cada una está representada por un _Codi_, para agrupar las entradas se recurre a una matriz de  valores, denominada matriz de asociación dispersa de entrada (_Made_). Cada columna de la MADE representa cada _Codi_ que la conforma, y cada fila \(secuencia\) representa un caso en concreto de valores.
 
-###Acciones (salidas)###
+### Acciones (salidas) ###
 Para definir salidas se crea otro tipo de _Codi_, este tiene asociado código, por ello se denominan _Codiac_ (Conjunto disperso con asociación de código). El conjunto de acciones de salida puede tener uno o más grupos de acciones, cada grupo de acciones está representado por un _Codiac_, para agrupar las acciones (salidas) se utiliza una matriz de valores, denominada matriz de asociación dispersa de salida (_Mads_).
 
-###Matriz de asociación global###
+### Matriz de asociación global ###
 La asociación entre _Made_ y _Mads_ se denomina matriz de asociación global(_Mag_). Las secuencias de la _Mag_ corresponden al número de filas de la matriz de asociación general, y esto finalmente representa la solución a lo que se busca llegar.
 
 Entonces lo que se hace con lecda es crear las diferentes matrices, las acciones, y luego se compila para generar el código que reflejara lo descrito por las matrices.
 
-###Observaciones###
+### Observaciones ###
 La forma presentada para modelar situaciones es una propuesta en desarrollo, actualmente se requieren desarrollos teóricos en este campo, que se espera a futuro concretarlos y desarrollarlos. 
 
-##Crear el proyecto##
+## Crear el proyecto ##
 El proyecto está desarrollado sobre un sistema operativo Linux \(Ubuntu 14.04 \), para compilarlo se utilizó:
 
 * bison (GNU bison) 3.0.2
@@ -45,11 +45,11 @@ Teniendo lo necesario, para compilar el proyecto solo se requiere hacer un make 
 
 		make
 
-##Características del compilador##
+## Características del compilador ##
 
 gclec es un sencillo compilador para el lenguaje LECDA, es importante recordar que lecda aún está en desarrollo y por lo mismo su compilador trabaja con aspectos básicos, a continuación se documenta el lenguaje con el que trabaja el compilador.
 
-###Palabras reservadas###
+### Palabras reservadas ###
 Todas las palabras reservadas empiezan con letra mayúscula:
   * Codi: declara un codi, asociado a variables numéricas.
   * Codiac: declara un codiac, asociado a acciones o fragmentos de código.
@@ -63,7 +63,7 @@ Todas las palabras reservadas empiezan con letra mayúscula:
   * Switch: forma de generar codigo
   * If: forma de generar codigo
 
-###Operadores###
+### Operadores ###
 Se utilizan las comillas para definir la secuencia exacta en formato de cadenas le lenguaje c:
   * "\\n$": inicio para literal de código o rutina. En realidad corresponde a un inicio de linea con el caracter $, el resto de la linea se ignora, y a partir de la siguiente línea se toma como un literal de código hasta encontrar una nueva línea que inicie $.
   * "\\n$": fin para literal de codigo o rutina. Igual que para el inicio, se toma $ en un inicio de línea para indicar la finalización del código de programación, todo lo que sigue en esta línea se ignora.
@@ -77,11 +77,11 @@ Se utilizan las comillas para definir la secuencia exacta en formato de cadenas 
   * "//": comentarios de linea
   
 
-###Tipos de variables###
+### Tipos de variables ###
 Los tipos de variables existentes son: Codi, Codiac, Made, Mads, Mag, Rutina.
 
-###Tipos de sentencias###
-####Declaraciones puras####
+### Tipos de sentencias ###
+#### Declaraciones puras ####
 Son sentencias que solo indican la creación de una variable, terminan con punto y coma y salto de linea.
   * Declaración de codi.
   
@@ -107,7 +107,7 @@ Son sentencias que solo indican la creación de una variable, terminan con punto
 
 		Mag switchM(4)(miMade:miMads);
 
-####Asignaciones puras####
+#### Asignaciones puras ####
   * Asignación a rutina de un codigo literal. 
 
 		miRutina =
@@ -144,14 +144,14 @@ Son sentencias que solo indican la creación de una variable, terminan con punto
 					3: 1, 3 
 					};
 
-####Procedimientos####
+#### Procedimientos ####
 * Función escribe.
 
 		Escribe(miRutina);
 
 
 
-##Organización del proyecto##
+## Organización del proyecto ##
 El directorio principal de trabajo contiene los directorios:
 
 * bin: Se halla el binario del compilador.
@@ -166,10 +166,10 @@ El directorio principal de trabajo contiene los directorios:
   
 * src \(source\): Código fuente en c, y el archivo para el analizador lexico-semántico desarrollado en bison (\*.y) 
 
-###Acerca del formato de los archivos###
+### Acerca del formato de los archivos ###
 Los archivos fuente están dados en formato _ISO-8859-15 (Latin 9)_, es un aspecto a tener en cuenta, dado que el escaner trabaja en base a grupos de carácteres que incluyen acentos, los cuales se representan por un solo byte. También influye en que se trabajen adecuadamente los mensajes de error.
 
-##Ejemplos##
+## Ejemplos ##
 En el directorio ejemplos existen algunos archivos \*.lec que se pueden compilar. Para realizar una prueba, estando en el directorio del proyecto, se puede usar directamente en terminal el comando: 
 
 		make probar
